@@ -1,0 +1,134 @@
+.full-user-register {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 72px);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.fur-card {
+    border: 1px solid rgba(0, 0, 0, 0.189);
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+}
+
+.fur-card>h1 {
+    background-color: var(--prime-color);
+    padding: 10px 20px;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+.r-content {
+    display: flex;
+    gap: 10px;
+    padding: 20px;
+    flex-direction: column;
+}
+
+.fur-left {
+    color: white;
+    background-color: var(--prime-color);
+    padding: 20px;
+    flex: 1;
+}
+
+.furl-list {
+    list-style-type: circle;
+    margin-left: 20px;
+}
+
+.furl-sublist {
+    list-style-type: lower-alpha;
+    margin-left: 20px;
+}
+
+.fur-right {
+    flex: 1;
+    margin: auto 0;
+}
+
+.fur-right>form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fur-right>form>input {
+    font-size: 18px;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.177);
+}
+
+.fur-right>form>input:last-child {
+    font-size: 18px;
+    padding: 10px;
+    border: 0;
+    background-color: green;
+    color: var(--w-text);
+    font-weight: 600;
+}
+
+.p-alert {
+    font-weight: 600;
+    color: red;
+    margin-top: -10px;
+}
+
+#w-pass {
+    border: 2px solid red;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    15%, 35%, 55%, 75%, 95% { transform: translateX(-5px); }
+    25%, 45%, 65%, 85% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+/* Media Queries for Responsiveness */
+@media (min-width: 900px) {
+    .r-content {
+        flex-direction: row;
+    }
+
+    .fur-left, .fur-right {
+        width: 50%;
+    }
+
+    .fur-card>h1 {
+        font-size: 28px;
+    }
+
+    .fur-right>form>input {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .r-content {
+        flex-direction: column;
+    }
+    .full-user-register{
+        display: block;
+    }
+    .fur-left, .fur-right {
+        width: 100%;
+    }
+
+    .fur-card>h1 {
+        font-size: 22px;
+    }
+
+    .fur-right>form>input {
+        font-size: 16px;
+    }
+}

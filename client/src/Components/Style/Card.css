@@ -1,0 +1,28 @@
+.full-card{
+    scroll-snap-align: start; 
+    width: 450px;
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+.rem-content{
+    display: flex;
+    justify-content: space-between;
+}
+.rem-content>p{
+    margin: auto 0;
+}
+.d-btn{
+    background-color: red;
+    width: fit-content;
+    color: white;
+    font-weight: 600;
+}
+
+@media screen and (max-width: 900px) {
+    .full-card{
+        width: 100%;
+    }
+}

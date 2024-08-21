@@ -1,0 +1,166 @@
+.head-form-section {
+    width: 100%;
+    padding: 10px 50px;
+}
+.form-table {
+    width: 100%;
+    padding: 10px 50px;
+}
+
+.form-table > table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures there are no extra spaces between table cells */
+}
+
+.form-table > table > thead > tr > th,
+.form-table > table > tbody > tr > td {
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    padding: 10px;
+    text-align: left; /* Ensure text is left-aligned for consistency */
+}
+
+.w-t-btns {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.r-m-btn {
+    padding: 10px 12px;
+    background-color: green;
+    user-select: none;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    border-radius: 4px; /* Adds a slight rounding to the button */
+    transition: background-color 0.3s; /* Adds a smooth transition for hover effect */
+}
+.s-m-btn {
+    padding: 10px 12px;
+    background-color: yellow;
+    user-select: none;
+    cursor: pointer;
+    border-radius: 4px; /* Adds a slight rounding to the button */
+    transition: background-color 0.3s; /* Adds a smooth transition for hover effect */
+}
+
+.s-m-btn:hover {
+    background-color: #ffeb3b; /* Slightly darkens the yellow on hover */
+}
+
+.d-m-btn {
+    padding: 10px 12px;
+    background-color: rgb(255, 0, 0);
+    color: white;
+    cursor: pointer;
+    border-radius: 4px; /* Adds a slight rounding to the button */
+    transition: background-color 0.3s; /* Adds a smooth transition for hover effect */
+}
+
+.d-m-btn:hover {
+    background-color: #cc0000; /* Slightly darkens the red on hover */
+}
+
+.c-f-pop-up {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.67);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none; /* Hide by default */
+}
+
+.c-f-pu-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+}
+
+.c-f-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    cursor: pointer;
+}
+
+
+.c-f-close > i {
+    font-size: 28px;
+    color: rgb(255, 48, 48);
+    transition: color 0.3s;
+}
+
+.c-f-close > i:hover {
+    color: #b71c1c; 
+}
+
+.mailer-pop{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.801);
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+.m-f-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    cursor: pointer;
+}
+.m-f-close > i {
+    font-size: 28px;
+    color: rgb(255, 48, 48);
+    transition: color 0.3s;
+}
+
+.m-f-close > i:hover {
+    color: #b71c1c; 
+}
+.mail-card{
+    width: 60vw;
+    background-color: white;
+    padding: 30px;
+    border: 3px solid rgba(0, 0, 0, 0.152);
+    border-radius: 20px;
+}
+.mail-card>form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.mail-card>h1{
+    margin-bottom: 20px;
+}
+.mail-card>form>input, .mail-card>form>textarea{
+    font-size: 20px;
+    width: 100%;
+    padding: 10px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.202);
+    border-radius: 5px;
+    outline: none;
+}
+.mail-card>form>input:last-child{
+    background-color: green;
+    width: fit-content;
+    padding: 10px 30px;
+    color: white;
+    font-weight: 600;
+}
+.readOn{
+    background-color: rgba(0, 0, 0, 0.095);
+}

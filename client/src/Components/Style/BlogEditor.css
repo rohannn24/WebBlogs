@@ -1,0 +1,63 @@
+.full-editor{
+    padding: 20px 40px;
+    height: calc(100vh - 72px);
+    overflow: auto;
+    padding-bottom: 30vh;
+    position: relative;
+}
+.full-editor::-webkit-scrollbar{
+    display: none;
+}
+.full-editor>form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.inpt-pair{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.inpt-pair>input, .inpt-pair>label, .inpt-pair>textarea{
+    font-size: 20px;
+    padding: 5px 10px;
+    outline: none;
+}
+#image{
+    padding: 0 0;
+}
+#image::-webkit-file-upload-button{
+    padding: 10px 55px;
+    border: none;
+    margin-right: 20px;
+    background-color: rgb(242, 242, 242);
+}
+.inpt-pair>input, .inpt-pair>textarea{
+    border: 2px solid rgba(0, 0, 0, 0.109);
+    border-radius: 10px;
+}
+.full-editor>form>input{
+    width: fit-content;
+    background-color: green;
+    color: white;
+    border: 0;
+    outline: none;
+    padding: 10px 70px;
+    font-size: 20px;
+    font-weight: 500;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.showUploading{
+    display: none;
+}
+.showUploaded{
+    display: none;
+}
+@media screen and (max-width: 900px) {
+    .full-editor>form>input{
+        position: relative;
+        
+    }
+}

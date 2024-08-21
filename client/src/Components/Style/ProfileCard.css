@@ -1,0 +1,49 @@
+.full-profile-card{
+    display: flex;
+    justify-content: space-between;
+}
+.profile-left{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.p-img-ctrl{
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+.p-img-ctrl>img{
+    width: 100%;
+    height: 100%;
+}
+.profile-mid{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: auto 0;
+}
+.profile-right{
+    margin: auto 0;
+}
+.p-btns{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.n-b{
+    background-color: red;
+    padding: 10px 20px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+.d-b{
+    background-color: yellow;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}

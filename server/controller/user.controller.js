@@ -46,16 +46,22 @@ export const login = async (req, res) => {
                 { email: req.body.id },
                 { phone: req.body.id }
             ]
-        })
+        });
+
         if (!user) {
             res.json({
                 success: false,
                 message: 'invalid credentials'
-            })
+            });
         } else {
             const password = user.password;
             if (bcrypt.compareSync(req.body.password, password)) {
-                const token = jwt.sign({ id: user._id }, process.env.KEY);
+                // Log the value of process.env.KEY
+                console.log('JWT Key:', process.env.KEY);
+
+                // Fallback to a default key if process.env.KEY is undefined
+                const token = jwt.sign({ id: user._id }, process.env.KEY || 'defaultSecretKey');
+                
                 const { password, ...others } = user._doc;
                 res.cookie('token', token, {
                     httpOnly: true
@@ -64,12 +70,12 @@ export const login = async (req, res) => {
                     message: 'Logged in Successfully',
                     user: others,
                     token: token
-                })
+                });
             } else {
                 res.status(403).json({
                     success: false,
                     message: 'invalid credentials'
-                })
+                });
             }
         }
     } catch (error) {
@@ -168,8 +174,7 @@ export const likeComment = async (req, res) => {
             message: 'An error occurred',
         });
     }
-};
-
+}
 export const disLikeComment = async (req, res) => {
     try {
         const comment = await commentModel.findOne({ _id: req.params.cId });
@@ -210,8 +215,7 @@ export const disLikeComment = async (req, res) => {
             message: 'Server error'
         });
     }
-};
-
+}
 export const editComment = async (req, res) => {
     try {
         const comment = await commentModel.findByIdAndUpdate(req.body.cId, {
@@ -290,8 +294,7 @@ export const likeBlog = async (req, res) => {
             message: 'An error occurred',
         });
     }
-};
-
+}
 export const disLikeBlog = async (req, res) => {
     try {
         const blog = await blogModel.findOne({ _id: req.params.bId });
@@ -333,8 +336,7 @@ export const disLikeBlog = async (req, res) => {
             message: 'An error occurred',
         });
     }
-};
-
+}
 export const blogBySlug = async (req, res) => {
     try {
         const blog = await blogModel
@@ -369,4 +371,4 @@ export const blogBySlug = async (req, res) => {
             message: 'Error fetching blog'
         });
     }
-};
+}

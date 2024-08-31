@@ -191,7 +191,19 @@
 .comment-like-area > h5 {
     padding: 20px 10px;
 }
-
+.loader-post{
+    display: flex;
+    width: 100%;
+    height: calc(100% - 72px);
+    background-color: rgba(0, 0, 0, 0.41);
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+}
 @media screen and (max-width: 1220px) {
     .full-post-page{
         flex-direction: column;

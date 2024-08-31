@@ -14,8 +14,7 @@ const HomeManager = ({ showAlert }) => {
     const verifyAdmin = async () => {
       const adminCheck = await checkAdmin();
       setResult(adminCheck);
-
-      document.title = "Dashboard | TechBlog";
+    document.title = 'Manage Home | TechBlog'
 
       if (!adminCheck.success) {
         nav('/');

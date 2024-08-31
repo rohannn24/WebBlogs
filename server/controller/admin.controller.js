@@ -27,7 +27,6 @@ export const check = async (req, res) => {
         console.log('error');
     }
 }
-
 export const login = async (req, res) => {
     try {
         const admin = await adminModel.findOne({
@@ -46,7 +45,7 @@ export const login = async (req, res) => {
             } else {
                 const password = admin.password;
                 if (bcrypt.compareSync(req.body.password, password)) {
-                    const token = jwt.sign({ id: admin._id }, process.env.KEY);
+                    const token = jwt.sign({ id: admin._id }, process.env.KEY || 'defaultSecretKey');
                     const { password, ...others } = admin._doc;
                     res.cookie('token', token, {
                         httpOnly: true
@@ -134,7 +133,7 @@ export const register = async (req, res) => {
             const hash = bcrypt.hashSync(password, salt);
             const newAdmin = new adminModel({ ...req.body, password: hash, otp });
             await newAdmin.save();
-            const token = jwt.sign({ id: newAdmin._id }, process.env.KEY);
+            const token = jwt.sign({ id: newAdmin._id }, process.env.KEY || 'defaultSecretKey');
             const { password: hashedPassword, ...others } = newAdmin._doc;
 
             res.cookie('token', token, {
@@ -237,15 +236,51 @@ export const updateBlog = async (req, res) => {
         console.log(error);
     }
 }
-export const deleteComment = (req, res) => {
+export const deleteComment = async (req, res) => {
     try {
+        // Find and delete the comment by ID
+        const comment = await commentModel.findByIdAndDelete(req.params.cId);
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Comment not found.'
+            });
+        }
 
-        res.send('ok');
+        // Find and update the user
+        const user = await userModel.findByIdAndUpdate(
+            req.params.uId,
+            { $pull: { commentId: req.params.cId } }, // Remove the comment ID from the array
+            { new: true } // Return the updated document
+        );
+
+        // Update the blog without triggering validation
+        const blog = await blogModel.findByIdAndUpdate(
+            comment.blogId,
+            { $pull: { commentId: req.params.cId } }, // Remove the comment ID from the array
+            { new: true } // Return the updated document
+        ).populate({
+            path: 'commentId',
+            populate: {
+                path: 'userId',
+                select: 'name' // Select only the fields you need
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            message: 'Comment deleted permanently',
+            newUser: user,
+            comments: blog.commentId
+        });
     } catch (error) {
-        console.log(error);
+        console.error('Error deleting comment:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete comment.'
+        });
     }
-}
-
+};
 export const getComment = async (req, res) => {
     try {
         const forms = await formModel.find();
@@ -271,8 +306,6 @@ export const deleteForm = async (req, res) => {
         console.log(error)
     }
 }
-
-
 export const sendMail = async (req, res) => {
     const { receiver, cc, subject, content } = req.body;
 
@@ -335,7 +368,6 @@ export const verifyOtp = async (req, res) => {
 
     }
 }
-
 export const getBlogById = async (req, res) => {
     const blog = await blogModel.findOne({_id: req.params.id})
     res.json({
@@ -344,3 +376,38 @@ export const getBlogById = async (req, res) => {
         blog
     })
 }
+export const getCommentByBlogId = async (req, res) => {
+    try {
+        // Find the blog by its ID and populate the comments and user data
+        const blog = await blogModel.findOne({ _id: req.params.id })
+            .populate({
+                path: 'commentId',
+                populate: {
+                    path: 'userId', // Populate userId in comments
+                    select: 'name' // Select fields you need from the user model
+                }
+            })
+            .exec(); // Use execPopulate() to return a promise
+
+        // Check if the blog exists
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: 'Blog not found.'
+            });
+        }
+
+        // Send the response with the populated comments
+        res.status(200).json({
+            success: true,
+            message: 'Data fetched successfully.',
+            comments: blog.commentId // Access the populated comments array
+        });
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch comments.'
+        });
+    }
+};

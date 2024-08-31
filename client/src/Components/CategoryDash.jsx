@@ -9,9 +9,10 @@ const CategoryDash = ({
     const [newCat, setNewCat] = useState({
         catName: ''
     });
-    
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const getCat = async () => {
+            setLoading(true);
             const res = await fetch('/api/category/all-category', {
                 method: 'GET',
                 headers: {
@@ -21,6 +22,7 @@ const CategoryDash = ({
             })
             const resData = await res.json();
             setCat(resData.categories);
+            setLoading(false);
         }
         getCat();
     }, [])
@@ -70,6 +72,10 @@ const CategoryDash = ({
     }
     return (
         <>
+        <div className="loader" style={{display: loading?'flex':'none'}}>
+            <div className="loading"></div>
+            <p>Loading...</p>
+        </div>
             <div className="full-cat-dash">
                 <div className="fcd-card">
                     <h1>All Categories</h1>

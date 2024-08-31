@@ -17,8 +17,6 @@ export const allCat = async (req, res) => {
         res.status(500).json({ message: 'Server Error' }); 
     }
 };
-
-
 export const addNewCat = async (req, res) => {
     try {
         // Check if a category with the same name already exists
@@ -52,7 +50,6 @@ export const addNewCat = async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
-
 export const deleteCat = async (req, res) => {
     try {
         const { id } = req.params;

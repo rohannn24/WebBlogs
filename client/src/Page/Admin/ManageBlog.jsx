@@ -3,7 +3,10 @@ import './Style/Dashboard.css'
 import DashNav from '../../Components/DashNav'
 import AllBlog from '../../Components/AllBlog'
 
-const ManageBlog = () => {
+const ManageBlog = ({
+  user,
+  showAlert
+}) => {
   useEffect(() => {
     document.title = "Manage Blog | TechBlog"
   },[])
@@ -14,7 +17,7 @@ const ManageBlog = () => {
           <DashNav />
         </div>
         <div className="fd-right">
-          <AllBlog />
+          <AllBlog user={user} showAlert={showAlert}/>
         </div>
       </div>
     </>

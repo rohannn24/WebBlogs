@@ -6,8 +6,11 @@ const DashContent = ({ user, showAlert }) => {
     const [cat, setCat] = useState(null);
     const [newCat, setNewCat] = useState({ catName: '' });
     const nav = useNavigate();
+    const [deleting, setDeleting] = useState(false);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const getCat = async () => {
+            setLoading(true);
             const res = await fetch('/api/category/all-category', {
                 method: 'GET',
                 headers: {
@@ -17,6 +20,7 @@ const DashContent = ({ user, showAlert }) => {
             });
             const resData = await res.json();
             setCat(resData.categories);
+            setLoading(false);
         };
         getCat();
     }, []);
@@ -25,44 +29,50 @@ const DashContent = ({ user, showAlert }) => {
         setNewCat({ [e.target.name]: e.target.value });
     };
 
-    const handleCatSubmit = async (e) => {
-        e.preventDefault();
-        const res = await fetch('/api/category/add-new-category', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                token: localStorage.getItem('token')
-            },
-            body: JSON.stringify(newCat)
-        });
-        const resData = await res.json();
-        if (res.ok) {
-            setCat(resData.allCategories);
-            document.querySelector('.add-cat-popup').style.display = 'none';
-            showAlert(resData.message);
-            setNewCat({ catName: '' });
-        } else {
-            document.querySelector('.add-cat-popup').style.display = 'none';
-            showAlert(resData.message);
-        }
-    };
+    
 
     const handleCatDel = async (id) => {
-        const res = await fetch(`/api/admin/delete-blog/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                token: localStorage.getItem('token')
+        try {
+            setDeleting(true);
+            const res = await fetch(`/api/admin/delete-blog/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    token: localStorage.getItem('token')
+                }
+            });
+            const data = await res.json();
+    
+            if (res.ok) {
+                // Update state to remove the deleted blog
+                setCat(prevCats => 
+                    prevCats.map(category => ({
+                        ...category,
+                        blogs: category.blogs.filter(blog => blog._id !== id)
+                    }))
+                );
+                setDeleting(false);
+                showAlert(data.message);
+            } else {
+                showAlert('Failed to delete blog');
             }
-        });
-        const data = await res.json();
-        if (res.ok) {
-            setCat(data.category);
-            showAlert(data.message);
+        } catch (error) {
+            console.error('Error deleting blog:', error);
+            showAlert('Error deleting blog');
         }
     };
+    
 
     return (
+        <>
+        <div className="loader" style={{display: deleting?'flex':'none'}}>
+            <div className="loading"></div>
+            <p>Deleting...</p>
+        </div>
+        <div className="loader" style={{display: loading?'flex':'none'}}>
+            <div className="loading"></div>
+            <p>Loading...</p>
+        </div>
         <div className="full-cat-dash">
             <div className="fcd-card">
                 <h1>All Blogs</h1>
@@ -104,6 +114,7 @@ const DashContent = ({ user, showAlert }) => {
                 </div>
             </div>
         </div>
+                            </>
     );
 };
 

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { checkAdmin } from '../../utils/SetValues';
 
 const Dashboard = ({ showAlert }) => {
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(false);
   const nav = useNavigate();
 
   useEffect(() => {

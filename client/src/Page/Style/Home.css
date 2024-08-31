@@ -5,6 +5,16 @@
     flex-direction: column;
     gap: 3vh;
 }
+.nothing{
+    width: 100%;
+    height: calc(100vh - 72px);
+    position: absolute;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
 @media screen and (max-width: 900px) {
     .wrapp-home{

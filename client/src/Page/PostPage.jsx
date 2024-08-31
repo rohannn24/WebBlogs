@@ -16,6 +16,7 @@ const PostPage = ({
     content: "",
     blogId: "",
   });
+  const [loading, setLoading] = useState(false);
   const [isAdmin, setAdmin] = useState(true)
   useEffect(() => {
     const getBlog = async () => {
@@ -64,6 +65,7 @@ const PostPage = ({
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`/api/user/${slug}`, {
           method: 'GET',
           headers: {
@@ -77,6 +79,7 @@ const PostPage = ({
         setBlogData(resData.blog);
         console.log(resData.blog);
         setCommentData({ ...commentData, blogId: resData.blog._id })
+        setLoading(false);
       } catch (error) {
         setError(error.message);
       }
@@ -142,6 +145,7 @@ const PostPage = ({
                 content: "",
                 blogId: prevData.blogId,
             }));
+            console.log(resData);
         } else {
             setError('Failed to add comment');
         }
@@ -227,9 +231,15 @@ const PostPage = ({
       showAlert(resData.message);
     }
   };
-
+  const handleLink = (str) => {
+    return str.replace(/\s+/g, '-');
+  };
   return (
     <>
+    <div className="loader-post" style={{display: loading?'flex':'none'}}>
+            <div className="loading"></div>
+            <p>Loading...</p>
+        </div>
       <div className="full-post-page">
         <div className="fpp-left">
           <div className="post-area">
@@ -292,7 +302,7 @@ const PostPage = ({
               <ul className="recentlist">
                 {cat.map((category) => (
                   <li key={category._id} className="rl-items">
-                    <Link to={`/${category.catName.toLowerCase()}`}>
+                    <Link to={`/${handleLink(category.catName).toLowerCase()}`}>
                       {category.catName}
                     </Link>
                   </li>
@@ -310,7 +320,7 @@ const PostPage = ({
                   <div key={blog._id} className="oneRecent">
                     <img src={blog.bImg} alt="" />
                     <li className="rl-items">
-                      <Link to={`/${blog?.cat?.catName.toLowerCase()}/${blog.slug}`}>
+                      <Link to={`/${handleLink(blog?.cat?.catName).toLowerCase()}/${blog.slug}`}>
                         {truncateTitle(blog.title, 40)}
                       </Link>
                       <div className="rl-meta">

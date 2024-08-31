@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Style/Contact.css'
+import { useNavigate } from 'react-router-dom';
+import { checkAdmin } from '../utils/SetValues';
 const Contact = ({ user, showAlert }) => {
   const [formData, setFormData] = useState({
     name: user?.name,
@@ -9,6 +11,19 @@ const Contact = ({ user, showAlert }) => {
     subject: "General Enquiry",
     msg: ""
   })
+  const [result, setResult] = useState(null);
+    const nav = useNavigate();
+
+    useEffect(() => {
+        const verifyAdmin = async () => {
+            const adminCheck = await checkAdmin();
+            setResult(adminCheck);
+            if(adminCheck.success){
+              nav('/admin/dashboard')
+            }
+        };
+        verifyAdmin();
+    }, []);
   useEffect(() => {
     document.title = "Contact Us | TechBlog"
     const inptNode = document.querySelectorAll('.unEditable');

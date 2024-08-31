@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Style/Recent.css';
 import { Link } from 'react-router-dom';
 
-const Recent = ({ user, onComplete }) => {
+const Recent = ({ user, onComplete, handleData }) => {
     const [recent, setRecent] = useState(null);
 
     useEffect(() => {
@@ -19,6 +19,13 @@ const Recent = ({ user, onComplete }) => {
                 },
             });
             const resData = await res.json();
+            console.log(resData);
+            if(resData?.blogs?.length === 0){
+                handleData(true);
+            }
+            if(resData?.blogs?.length > 0){
+                handleData(false);
+            }
             if (res.ok) {
                 setRecent(resData);
                 onComplete();

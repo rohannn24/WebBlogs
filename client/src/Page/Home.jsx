@@ -8,6 +8,7 @@ const Home = ({ user }) => {
   const [categories, setCategories] = useState([]);
   const [loadingCat, setLoadingCat] = useState(true);
   const [loadingBlog, setLoadingBlog] = useState(true);
+  const [nothing, setNothing] = useState(false);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -18,7 +19,8 @@ const Home = ({ user }) => {
           },
         });
         const data = await res.json();
-        setCategories(data.structure[0].homeRow);
+        console.log(data);
+        setCategories(data.structure[0]?.homeRow);
         setLoadingCat(false);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -28,25 +30,33 @@ const Home = ({ user }) => {
     fetchCategories();
   }, []);
   useEffect(() => {
-    if(loadingBlog || loadingCat){
+    if (loadingBlog || loadingCat) {
       document.querySelector('.load-section').style.display = 'block';
       document.querySelector('.wrapp-home').style.display = 'none';
       console.log('hit');
-    } else{
+    } else {
       document.querySelector('.load-section').style.display = 'none';
       document.querySelector('.wrapp-home').style.display = 'block';
     }
-  },[loadingBlog, loadingCat])
+  }, [loadingBlog, loadingCat])
   const handleLoading = () => {
     setLoadingBlog(false);
   }
+  const handleData = (val) => {
+    setNothing(val);
+  }
   return (
     <>
-    <div className="load-section">
-      <Loading/>
-    </div>
+      {nothing && <div className='nothing'>
+        <div className="nothing-wrapp">
+          <img src="https://img.freepik.com/premium-vector/nothing-here-flat-illustration_418302-77.jpg" alt="" />
+        </div>
+      </div>}
+      <div className="load-section">
+        <Loading />
+      </div>
       <div className="wrapp-home">
-        <Recent user={user} onComplete = {handleLoading}/>
+        <Recent user={user} onComplete={handleLoading} handleData = {handleData} />
         {categories?.map((catName, index) => (
           <Category key={index} cat={catName} />
         ))}

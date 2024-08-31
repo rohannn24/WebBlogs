@@ -6,10 +6,11 @@ const Blog = ({ showAlert }) => {
   const [blogs, setBlogs] = useState([]); // Initialize with an empty array
   const [currentPage, setCurrentPage] = useState(1);
   const [blogsPerPage, setNumberOfBlogs] = useState(8);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getCat = async () => {
       try {
+        setLoading(true);
         const res = await fetch('/api/com/all-blogs', {
           method: 'GET',
           headers: {
@@ -21,6 +22,7 @@ const Blog = ({ showAlert }) => {
         }
         const resData = await res.json();
         setBlogs(resData.blogs.reverse()); // Reverse the order
+        setLoading(false);
       } catch (error) {
         console.log(error);
         showAlert('Failed to fetch Blogs');
@@ -44,8 +46,18 @@ const Blog = ({ showAlert }) => {
       setNumberOfBlogs(e.target.value);
     }
   }
+  const handleLink = (e) => {
+    const originalString = e;
+    const convertedString = originalString.replace(' ', '-');
+    console.log(convertedString);
+    return convertedString
+  }
   return (
     <>
+    <div className="loader-blog" style={{display: loading?'flex':'none'}}>
+            <div className="loading"></div>
+            <p>Loading...</p>
+        </div>
       <div className="blog-page-wrapper">
         <div className="bpw-left">
           <div className="bpw-header">
@@ -55,7 +67,7 @@ const Blog = ({ showAlert }) => {
           <hr />
           {currentBlogs.length > 0 ? (
             currentBlogs.map((blog) => (
-              <Link to={`/${blog.cat.catName.toLowerCase()}/${blog.slug}`} key={blog._id}>
+              <Link to={`/${handleLink(blog.cat.catName).toLowerCase()}/${blog.slug}`} key={blog._id}>
                 <div className="bar-card">
                   <div className="bc-img-ctrl">
                     <img

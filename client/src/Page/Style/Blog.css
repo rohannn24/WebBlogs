@@ -56,3 +56,16 @@
     font-size: 18px;
     padding: 10px 10px;
 }
+.loader-blog{
+    display: flex;
+    width: 100%;
+    height: calc(100% - 72px);
+    background-color: rgba(0, 0, 0, 0.41);
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+}

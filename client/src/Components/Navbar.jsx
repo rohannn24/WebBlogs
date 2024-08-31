@@ -16,7 +16,8 @@ const Navbar = ({
     useEffect(() => {
         const verifyAdmin = async () => {
             const adminCheck = await checkAdmin();
-            setResult(adminCheck);
+            setResult(adminCheck.success);
+            console.log(adminCheck);
         };
         verifyAdmin();
     }, [nav]);
@@ -49,7 +50,7 @@ const Navbar = ({
                         <li className="listItems" onClick={handleClick}><Link to='/'>Home</Link></li>
                         <li className="listItems" onClick={handleClick}><Link to='/blogs'>Blog</Link></li>
                         <li className="listItems" onClick={handleClick}><Link to='/about'>About</Link></li>
-                        <li className="listItems" onClick={handleClick}><Link to='/contact-us'>Contact Us</Link></li>
+                        {!result && <li className="listItems" onClick={handleClick}><Link to='/contact-us'>Contact Us</Link></li>}
                         <li className="listItems" onClick={handleClick}><Link to='/terms-and-condition'>T&C</Link></li>
                     </ul>
                     {
@@ -60,7 +61,7 @@ const Navbar = ({
                             </div>
                         ) : (
                             <div className="btns" onClick={handleClick}>
-                                <Link to={`/${result?.success?`admin/${user.username}`:"user"}/profile`}><div className="profile-btn">
+                                <Link to={`/${result?`admin/${user.username}`:"user"}/profile`}><div className="profile-btn">
                                     <i className="fa-solid fa-user"></i>
                                     <p>Profile</p>
                                 </div></Link>

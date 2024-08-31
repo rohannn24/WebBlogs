@@ -12,7 +12,7 @@ const FormCard = ({
         subject: '',
         content: '',
     });
-
+    const [loading, setLoading] = useState(false);
     const showMessage = (message) => {
         document.querySelector('.sp-content').innerHTML = message;
         document.querySelector('.c-f-pop-up').style.display = 'flex';
@@ -36,6 +36,7 @@ const FormCard = ({
     }, []);
     
     const getComment = async () => {
+        setLoading(true);
         const res = await fetch('/api/admin/get-form', {
             method: 'GET',
             headers: {
@@ -46,6 +47,7 @@ const FormCard = ({
         const resData = await res.json();
         if (res.ok) {
             setForms(resData.forms);
+            setLoading(false);
         } else {
             console.log(res);
         }
@@ -97,6 +99,10 @@ const FormCard = ({
     }
     return (
         <>
+        <div className="loader" style={{display: loading?'flex':'none'}}>
+            <div className="loading"></div>
+            <p>Loading...</p>
+        </div>
             <div className="head-form-section">
                 <h1>All Form Submitted</h1>
             </div>

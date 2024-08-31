@@ -66,7 +66,7 @@ const App = () => {
           <Route path="/user/profile" element={<Profile user = {user}/>} />
           <Route path="/user/login" element={<UserLogin user = {user} onLogin = {handleNewUser}/>} />
           <Route path="/admin/dashboard" element={<Dashboard showAlert = {showAlert} />} />
-          <Route path="/admin/dashboard/manage-blog" element={<ManageBlog />} />
+          <Route path="/admin/dashboard/manage-blog" element={<ManageBlog user = {user} showAlert= {showAlert}/>} />
           <Route path="/admin/update-blog/:id" element={<UpdateBlog user={user} showAlert={showAlert} />} />
           <Route path="/admin/dashboard/manage-home" element={<HomeManager user = {user} showAlert={showAlert}/>} />
           <Route path="/admin/dashboard/manage-categories" element={<ManageCategories user = {user} showAlert = {showAlert}/>} />

@@ -28,6 +28,13 @@ const dbConnection = () => {
     })
 }
 
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Server is live'
+    })
+})
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors(corsAllow));

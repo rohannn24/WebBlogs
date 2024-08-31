@@ -17,7 +17,7 @@ const ProfileCard = ({
               <p>Username: {user?.username}</p>
               <p>Email: {user?.email}</p>
               <p>Phone: {user?.phone}</p>
-              <p>No. of Blogs: {user?.blogs.length}</p>
+              <p>No. of Blogs: {user?.blogs?.length}</p>
           </div>
           <div className="profile-right">
             <div className="p-btns">

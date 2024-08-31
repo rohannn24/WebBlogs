@@ -27,12 +27,10 @@ const Navbar = ({
             document.querySelector('.nav-right').style.left = '-100%'
         }
     }
-    // const handleClick = () => {
-    //     handleClick();
-    // }
     const handleLogout = () => {
         handleClick;
         logout("Succesfully Logged Out");
+        nav('/');
     }
     const notify = () => toast(alert);
     useEffect(() => {
@@ -49,7 +47,7 @@ const Navbar = ({
                 <div className="nav-right">
                     <ul className="navlist">
                         <li className="listItems" onClick={handleClick}><Link to='/'>Home</Link></li>
-                        <li className="listItems" onClick={handleClick}><Link to='/blog'>Blog</Link></li>
+                        <li className="listItems" onClick={handleClick}><Link to='/blogs'>Blog</Link></li>
                         <li className="listItems" onClick={handleClick}><Link to='/about'>About</Link></li>
                         <li className="listItems" onClick={handleClick}><Link to='/contact-us'>Contact Us</Link></li>
                         <li className="listItems" onClick={handleClick}><Link to='/terms-and-condition'>T&C</Link></li>

@@ -5,3 +5,84 @@
     justify-content: center;
     align-items: center;
 }
+.reg-pop-up{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.800);
+    z-index: 9999;
+    top: 0;
+    display: none;
+    justify-content: center;
+}
+.rpu-card{
+    margin-top: 100px;
+    background-color: white;
+    height: fit-content;
+    padding: 40px;
+    position: relative;
+    border: 5px solid rgba(0, 0, 0, 0.225);
+    border-radius: 20px;
+}
+.rpu-card>h2{
+    padding-bottom: 20px;
+}
+.rpu-close{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.rpu-card>form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.rpu-card>form>input{
+    font-size: 24px;
+    border: 2px solid rgba(0, 0, 0, 0.195);
+    border-radius: 10px;
+    padding: 5px 10px;
+}
+.rpu-card>form>input:last-child{
+    font-size: 24px;
+    border: 0;
+    border-radius: 10px;
+    padding: 5px 10px;
+    background-color: green;
+    color: white;
+}
+.showOtpError{
+    display: none;
+}
+.sending-mail{
+    position: fixed;
+    z-index: 99999;
+    background-color: rgba(255, 255, 255, 0.66);
+    height: 100vh;
+    top: 0;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sm-loading{
+    display: flex;
+    gap: 20px;
+}
+.sm-loading>h2{
+    margin: auto 0;
+}
+.sm-loader{
+    width: 50px;
+    height: 50px;
+    border: 8px solid rgb(255, 255, 255);
+    margin: auto;
+    border-radius: 50%;
+    border-top: 8px solid black;
+    animation: spin 0.4s ease-in infinite;
+}
+@keyframes spin {
+    to{
+        transform: rotate(360deg);
+    }
+}

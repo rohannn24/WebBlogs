@@ -6,7 +6,6 @@ import blogModel from '../models/blog.model.js';
 
 export const register = async (req, res) => {
     try {
-        console.log(req.body)
         const user = await userModel.findOne({
             $or: [
                 { username: req.body.username },
@@ -90,11 +89,11 @@ export const addComment = async (req, res) => {
         const blog = await blogModel.findOne({ _id: req.body.blogId });
         blog.commentId.push(newComment._id);
         await blog.save();
-        const allComment = (await blog.populate('commentId')).commentId;
+        const singleComment = await (await newComment.populate('blogId')).populate('userId')
         res.status(200).json({
             success: true,
             message: 'Comment added successfully',
-            comments: allComment
+            newComment:singleComment
         })
     } catch (error) {
         console.log(error);
@@ -130,60 +129,89 @@ export const saveBlog = async (req, res) => {
 }
 export const likeComment = async (req, res) => {
     try {
-        const comment = await commentModel.findOne({ _id: req.params.cId })
-        const isdisLikedBefore = comment.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
-        if (isdisLikedBefore) {
-            comment.dislikes.pop(req.user.Id);
+        const comment = await commentModel.findOne({ _id: req.params.cId });
+
+        // Remove dislike if the user had previously disliked the comment
+        const isDislikedBefore = comment.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
+        if (isDislikedBefore) {
+            comment.dislikes = comment.dislikes.filter(dislikeId => dislikeId.toString() !== req.user.id);
             await comment.save();
         }
-        const islikedBefore = comment.likes.some(likeId => likeId.toString() === req.user.id);
-        if (islikedBefore) {
-            res.status(403).json({
+
+        // Check if the comment is already liked by the user
+        const isLikedBefore = comment.likes.some(likeId => likeId.toString() === req.user.id);
+        if (isLikedBefore) {
+            return res.status(403).json({
                 success: false,
                 message: 'Already liked'
-            })
+            });
         } else {
             comment.likes.push(req.user.id);
             await comment.save();
-            const comments = (await blogModel.findOne({ _id: comment.blogId }).populate('commentId')).commentId;
+
+            // Populate comments with user information
+            const blog = await blogModel.findOne({ _id: comment.blogId }).populate({
+                path: 'commentId',
+                populate: { path: 'userId' }
+            });
+
             res.status(200).json({
                 success: true,
                 message: 'Liked successfully',
-                comments: comments
-            })
+                comments: blog.commentId
+            });
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred',
+        });
     }
-}
+};
+
 export const disLikeComment = async (req, res) => {
     try {
-        const comment = await commentModel.findOne({ _id: req.params.cId })
+        const comment = await commentModel.findOne({ _id: req.params.cId });
         const isLikedBefore = comment.likes.some(likesId => likesId.toString() === req.user.id);
         if (isLikedBefore) {
-            comment.likes.pop(req.user.Id);
-            await comment.save();
+            comment.likes.pull(req.user.id); // Use pull to remove the user's ID from likes
         }
+
         const isDislikedBefore = comment.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
         if (isDislikedBefore) {
-            res.status(403).json({
+            return res.status(403).json({
                 success: false,
                 message: 'Already Disliked'
-            })
+            });
         } else {
             comment.dislikes.push(req.user.id);
             await comment.save();
-            const comments = (await blogModel.findOne({ _id: comment.blogId }).populate('commentId')).commentId;
+
+            // Populate the comments with user data for the response
+            const updatedBlog = await blogModel.findOne({ _id: comment.blogId })
+                .populate({
+                    path: 'commentId',
+                    populate: {
+                        path: 'userId'
+                    }
+                });
+
             res.status(200).json({
                 success: true,
                 message: 'Disliked successfully',
-                comments: comments
-            })
+                comments: updatedBlog.commentId
+            });
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
     }
-}
+};
+
 export const editComment = async (req, res) => {
     try {
         const comment = await commentModel.findByIdAndUpdate(req.body.cId, {
@@ -223,57 +251,122 @@ export const deleteComment = async (req, res) => {
 }
 export const likeBlog = async (req, res) => {
     try {
-        const blog = await blogModel.findOne({ _id: req.params.bId })
-        const isdisLikedBefore = blog.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
-        if (isdisLikedBefore) {
-            blog.dislikes.pop(req.user.Id);
+        const blog = await blogModel.findOne({ _id: req.params.bId });
+
+        // Remove dislike if the user had previously disliked the blog
+        const isDislikedBefore = blog.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
+        if (isDislikedBefore) {
+            blog.dislikes = blog.dislikes.filter(dislikeId => dislikeId.toString() !== req.user.id);
             await blog.save();
         }
-        const islikedBefore = blog.likes.some(likeId => likeId.toString() === req.user.id);
-        if (islikedBefore) {
-            res.status(403).json({
+
+        // Check if the blog is already liked by the user
+        const isLikedBefore = blog.likes.some(likeId => likeId.toString() === req.user.id);
+        if (isLikedBefore) {
+            return res.status(403).json({
                 success: false,
                 message: 'Already liked'
-            })
+            });
         } else {
             blog.likes.push(req.user.id);
             await blog.save();
-            const blogData = await blogModel.findOne({ _id: blog._id }).populate('commentId');
+
+            // Populate commentId and userId within commentId
+            const blogData = await blogModel.findOne({ _id: blog._id }).populate({
+                path: 'commentId',
+                populate: { path: 'userId' }
+            });
+
             res.status(200).json({
                 success: true,
                 message: 'Liked successfully',
                 blog: blogData
-            })
+            });
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred',
+        });
     }
-}
+};
+
 export const disLikeBlog = async (req, res) => {
     try {
-        const blog = await blogModel.findOne({ _id: req.params.bId })
-        const islikedBefore = blog.likes.some(likeId => likeId.toString() === req.user.id);
-        if (islikedBefore) {
-            blog.likes.pop(req.user.Id);
+        const blog = await blogModel.findOne({ _id: req.params.bId });
+
+        // Remove like if the user had previously liked the blog
+        const isLikedBefore = blog.likes.some(likeId => likeId.toString() === req.user.id);
+        if (isLikedBefore) {
+            blog.likes = blog.likes.filter(likeId => likeId.toString() !== req.user.id);
             await blog.save();
         }
-        const isdisLikedBefore = blog.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
-        if (isdisLikedBefore) {
-            res.status(403).json({
+
+        // Check if the blog is already disliked by the user
+        const isDislikedBefore = blog.dislikes.some(dislikeId => dislikeId.toString() === req.user.id);
+        if (isDislikedBefore) {
+            return res.status(403).json({
                 success: false,
                 message: 'Already disliked'
-            })
+            });
         } else {
             blog.dislikes.push(req.user.id);
             await blog.save();
-            const blogData = await blogModel.findOne({ _id: blog._id }).populate('commentId');
+
+            // Populate commentId and userId within commentId
+            const blogData = await blogModel.findOne({ _id: blog._id }).populate({
+                path: 'commentId',
+                populate: { path: 'userId' }
+            });
+
             res.status(200).json({
                 success: true,
                 message: 'Disliked successfully',
                 blog: blogData
-            })
+            });
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred',
+        });
     }
-}
+};
+
+export const blogBySlug = async (req, res) => {
+    try {
+        const blog = await blogModel
+            .findOne({ slug: req.params.slug })
+            .populate('adminId', 'name email') // Populate fields from the Admin model
+            .populate('cat', 'catName') // Populate fields from the Category model
+            .populate({
+                path: 'commentId',
+                populate: {
+                    path: 'userId', // Populate userId inside each comment
+                    select: 'name email' // Select specific fields to populate
+                }
+            })
+            .exec();
+
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: 'Blog not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Blog Fetched...',
+            blog
+        });
+    } catch (error) {
+        console.error('Error fetching blog by slug:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching blog'
+        });
+    }
+};

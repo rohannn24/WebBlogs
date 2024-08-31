@@ -28,6 +28,11 @@ const adminSchema = mongoose.Schema({
     otp: {
         type: String
     },
+    verified: {
+        type: Boolean,
+        enum: [true, false],
+        default: false
+    },
     blogs: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Blog'

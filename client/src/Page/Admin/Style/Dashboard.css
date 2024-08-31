@@ -13,6 +13,7 @@
 }
 .sn-list{
     list-style-type: none;
+    height: calc(100vh - 72px);
 }
 .sn-list>hr{
     margin: 0 auto;
@@ -37,11 +38,21 @@
     top: 10px;
     display: none;
 }
+.dash-bgr{
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 5px 20px;
+    background-color: green;
+    color: white;
+    z-index: 9999;
+}
 @media screen and (max-width: 900px) {
     .fd-left{
         position: fixed;
         left: -100%;
         z-index: 998;
+        transition: left 0.8s ease-in-out;
     }
     .fd-right{
         width: 100%;

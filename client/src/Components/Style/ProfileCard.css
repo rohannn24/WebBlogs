@@ -47,3 +47,17 @@
     cursor: pointer;
     user-select: none;
 }
+@media screen and (max-width: 759px) {
+    .full-profile-card{
+        flex-direction: column;
+        gap: 20px;
+    }
+    .profile-left>h3{
+        text-align: center;
+    }
+    .profile-mid{
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+}

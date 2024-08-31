@@ -7,6 +7,10 @@ import cookieParser from 'cookie-parser'
 import userRouter from './router/user.router.js'
 import adminRouter from './router/admin.router.js'
 import comRouter from './router/com.router.js'
+import categoryRouter from './router/category.router.js'
+import homeRouter from './router/home.router.js'
+
+
 env.config();
 
 const corsAllow = {
@@ -30,6 +34,9 @@ app.use(cors(corsAllow));
 app.use('/api/user', userRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/com', comRouter);
+app.use('/api/category', categoryRouter);
+app.use('/api/home', homeRouter);
+
 
 app.listen(process.env.PORT, (e) => {
     console.log(e?chalk.red.inverse.bold('Server is not live'):chalk.green.inverse.bold(`Server is live on ${process.env.PORT}`))

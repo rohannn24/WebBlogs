@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Style/Category.css';
 import Card from './Card';
 
 const Category = ({ cat }) => {
   const cardsContainerRef = useRef(null);
+  const [allBlogs, setBlogs] = useState(null);
 
   const scrollLeft = () => {
     cardsContainerRef.current.scrollBy({
@@ -18,6 +19,25 @@ const Category = ({ cat }) => {
       behavior: 'smooth' // Smooth scrolling
     });
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetch(`/api/category/${cat}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const resData = await res.json();
+      if (res.ok) {
+        // Reverse the array before setting state
+        setBlogs(resData.catBlog.blogs.slice().reverse());
+      } else {
+        console.log('Error fetching blogs:', resData.message);
+      }
+    };
+    getData();
+  }, [cat]); // Adding `cat` as a dependency to refetch data when the category changes
 
   return (
     <>
@@ -36,22 +56,15 @@ const Category = ({ cat }) => {
         </div>
       </div>
       <div className="all-cards" ref={cardsContainerRef}>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        {
+          allBlogs?.length > 0 ? (
+            allBlogs.map((blog) => (
+              <Card key={blog._id} blog={blog} />
+            ))
+          ) : (
+            <p>No blogs available for this category.</p>
+          )
+        }
       </div>
     </>
   );

@@ -3,7 +3,9 @@ import './Style/Dashboard.css'
 import DashNav from '../../Components/DashNav'
 import FormCard from '../../Components/FormCard'
 
-const ContactForm = () => {
+const ContactForm = ({
+  showAlert
+}) => {
   useEffect(() => {
     document.title = "Form Submission | TechBlog"
   },[])
@@ -14,7 +16,7 @@ const ContactForm = () => {
           <DashNav/>
         </div>
         <div className="fd-right">
-          <FormCard/>
+          <FormCard showAlert={showAlert}/>
         </div>
       </div>
     </>

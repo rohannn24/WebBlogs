@@ -1,0 +1,228 @@
+.full-post-page {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.fpp-left {
+    width: 60%;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.fpp-right {
+    width: 35%;
+    max-width: 400px;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.post-area {
+    border: 1px solid rgba(0, 0, 0, 0.116);
+    padding: 20px;
+}
+
+.post-area > hr {
+    margin: 20px 0;
+}
+
+.meta-info {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(0, 0, 0, 0.489);
+    margin-bottom: 20px;
+    padding: 0 40px;
+}
+
+.blog-content > p {
+    margin: 20px 0;
+}
+
+.recent-cat > h1 {
+    background-color: var(--prime-color);
+    padding: 10px 20px;
+    color: white;
+}
+
+.recent-cat {
+    border: 1px solid rgba(0, 0, 0, 0.089);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.recentlist {
+    list-style-type: none;
+}
+
+.recentlist > li {
+    padding: 10px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.089);
+}
+
+.recentlist > li:hover {
+    background-color: rgba(0, 0, 0, 0.116);
+}
+
+.pa-img-ctrl {
+    width: 100%;
+    overflow: hidden;
+}
+
+.pa-img-ctrl > img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.rl-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rl-meta {
+    display: flex;
+    gap: 20px;
+}
+
+.oneRecent {
+    display: flex;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.089);
+    gap: 10px;
+}
+
+.oneRecent:hover {
+    background-color: rgba(0, 0, 0, 0.100);
+}
+
+.oneRecent > img {
+    width: 70px;
+}
+
+.meta {
+    color: rgba(0, 0, 0, 0.507);
+}
+
+.date {
+    margin: 10px 0;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.336);
+    padding: 0 10px;
+}
+
+.like-btn {
+    padding: 5px 10px;
+    background-color: rgb(245, 245, 245);
+    width: fit-content;
+    cursor: pointer;
+}
+
+.like-area {
+    display: flex;
+    gap: 30px;
+}
+
+.comment-like-area {
+    border: 1px solid rgba(0, 0, 0, 0.116);
+    padding: 20px;
+}
+
+.comment-like-area > hr {
+    margin: 10px 0;
+    border: 1px solid rgba(0, 0, 0, 0.171);
+}
+
+.all-comments {
+    padding: 20px 10px;
+    height: 350px;
+    overflow: auto;
+    border: 1px solid rgba(0, 0, 0, 0.178);
+    margin: 20px 0;
+}
+
+.all-comments::-webkit-scrollbar {
+    display: none;
+}
+
+.comment-like-area > form {
+    display: flex;
+    gap: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.103);
+    padding: 10px;
+}
+
+.comment-like-area > form > input {
+    border: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.267);
+    padding: 10px 20px;
+    outline: none;
+}
+
+.comment-like-area > form > input:first-child {
+    width: 90%;
+    font-size: 18px;
+}
+
+.comment-like-area > form > input:last-child {
+    width: 10%;
+    background-color: green;
+    color: white;
+}
+
+.sc-info {
+    display: flex;
+    gap: 30px;
+}
+
+.comment-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.144);
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.030);
+}
+
+.comment-like-area > h5 {
+    padding: 20px 10px;
+}
+
+@media screen and (max-width: 1220px) {
+    .full-post-page{
+        flex-direction: column;
+        padding: 0 0;
+    }
+    .fpp-left{
+        width: 100%;
+    }
+    .fpp-right {
+        width: 100%;
+        max-width: 100%;
+    }
+    .comment-like-area > form > input:first-child {
+        width: 70%;
+        font-size: 18px;
+    }
+    
+    .comment-like-area > form > input:last-child {
+        width: 30%;
+        background-color: green;
+        color: white;
+    }
+    .meta-info{
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 0;
+    }
+    .meta-info > p:first-child::after {
+        content: "\A";
+        white-space: pre;
+    }
+}

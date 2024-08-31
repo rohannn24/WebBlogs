@@ -12,13 +12,17 @@ import UserRegister from './Page/User/Register'
 import Profile from './Page/Profile'
 import Dashboard from './Page/Admin/Dashboard'
 import ManageBlog from './Page/Admin/ManageBlog'
-import ManageComment from './Page/Admin/ManageComment'
+import ManageCategories from './Page/Admin/ManageCategories'
 import AddBlog from './Page/Admin/AddBlog'
 import AdminProfile from './Page/Admin/Profile'
 import TermsCondition from './Page/TermsCondition'
 import ContactForm from './Page/Admin/ContactForm'
 import { getUser, userLogout } from './utils/SetValues'
 import ErrorPage from './Page/ErrorPage'
+import PostPage from './Page/PostPage'
+import CatBlog from './Page/CatBlog'
+import HomeManager from './Page/Admin/HomeManager'
+import UpdateBlog from './Components/UpdateBlog'
 
 
 const App = () => {
@@ -42,6 +46,9 @@ const App = () => {
   }
   const showAlert = (message) => {
     setAlert(message);
+    setTimeout(() => {
+      setAlert(null);
+    }, 2100);
   }
   return (
     <>
@@ -50,21 +57,26 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home user={user} />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/blogs" element={<Blog />} />
+          <Route path="/blogs" element={<Blog showAlert={showAlert}/>} />
           <Route path="/blogs/:catagory" element={<Home />} />
           <Route path="/blogs/:catagory/:id" element={<Home />} />
           <Route path="/admin/login" element={<Login user = {user} onLogin = {handleNewUser}  />} />
-          <Route path="/admin/register" element={<Register onRegister={handleNewUser} user = {user} />} />
+          <Route path="/admin/register" element={<Register onRegister={handleNewUser} user = {user} showAlert = {showAlert} />} />
           <Route path="/user/register" element={<UserRegister onRegister={handleNewUser} user = {user}/>} />
           <Route path="/user/profile" element={<Profile user = {user}/>} />
           <Route path="/user/login" element={<UserLogin user = {user} onLogin = {handleNewUser}/>} />
           <Route path="/admin/dashboard" element={<Dashboard showAlert = {showAlert} />} />
           <Route path="/admin/dashboard/manage-blog" element={<ManageBlog />} />
-          <Route path="/admin/dashboard/manage-comment" element={<ManageComment />} />
+          <Route path="/admin/update-blog/:id" element={<UpdateBlog user={user} showAlert={showAlert} />} />
+          <Route path="/admin/dashboard/manage-home" element={<HomeManager user = {user} showAlert={showAlert}/>} />
+          <Route path="/admin/dashboard/manage-categories" element={<ManageCategories user = {user} showAlert = {showAlert}/>} />
           <Route path="/admin/dashboard/add-new-blog" element={<AddBlog user = {user} showAlert = {showAlert} />} />
-          <Route path="/admin/dashboard/contact-form" element={<ContactForm />} />
+          <Route path="/admin/dashboard/contact-form" element={<ContactForm showAlert = {showAlert}/>} />
           <Route path="/admin/:username/profile" element={<AdminProfile user= {user}/>} />
           <Route path="/about" element={<About />} />
+          <Route path="/:cat/:slug" element={<PostPage user = {user} showAlert = {showAlert}/>} />
+          <Route path="/:cat" element={<CatBlog/>}/>
+          <Route path="/contact-us" element={<Contact user = {user} showAlert = {showAlert}/>} />
           <Route path="/terms-and-condition" element={<TermsCondition />} />
           <Route path="/*" element={<ErrorPage />} />
         </Routes>

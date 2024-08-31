@@ -1,8 +1,16 @@
 import blogModel from '../models/blog.model.js'
+import formModel from '../models/form.model.js'
+import adminModel from '../models/admin.model.js'
+import categoryModel from '../models/category.model.js';
 
 export const allBlog = async (req, res) => {
     try {
-        const blogs = await blogModel.find();
+        const blogs = await blogModel.find()
+        .populate('adminId')  
+        .populate('cat')      
+        .populate('likes')    
+        .populate('dislikes')
+        .populate('commentId');
         res.json({
             success: true,
             message: 'blogs fetched successfully',
@@ -36,3 +44,15 @@ export const catBlog = async (req, res) => {
         });
     }
 };
+export const submitForm = async (req, res) => {
+    try {
+        const newForm = new formModel({...req.body})
+        await newForm.save();
+        res.status(200).json({
+            success: true,
+            message: "Form Submitted Successfully..."
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}

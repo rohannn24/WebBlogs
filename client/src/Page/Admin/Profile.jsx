@@ -3,6 +3,7 @@ import { checkAdmin } from '../../utils/SetValues';
 import { useNavigate } from 'react-router-dom';
 import ProfileCard from '../../Components/ProfileCard';
 import './Style/Profile.css'
+import ShowBlog from '../../Components/ShowBlog';
 
 const Profile = ({
   user
@@ -27,6 +28,9 @@ const Profile = ({
     <>
       <div className="full-admin-profile">
         <ProfileCard user = {user}/>
+      </div>
+      <div className="all-blog">
+        <ShowBlog user = {user}/>
       </div>
     </>
   )

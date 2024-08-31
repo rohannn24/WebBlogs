@@ -1,0 +1,24 @@
+.full-error-page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
+    gap: 20px;
+}
+.full-error-page>p{
+    text-transform: capitalize;
+}
+.error-btns{
+    display: flex;
+    gap: 20px;
+}
+.a-btn{
+    background-color: red;
+    padding: 5px 20px;
+    user-select: none;
+    cursor: pointer;
+}
+.a-btn>a{
+    color: white;
+}

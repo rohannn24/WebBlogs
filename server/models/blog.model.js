@@ -4,15 +4,15 @@ import mongoose from "mongoose";
 const blogSchema = mongoose.Schema({
     adminId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Admin',
+        ref: 'Admin', 
         require: true
     },
-    title: {
+    title: { 
         type: String,
         required: true
     },
     description: {
-        type: String,
+        type: String, 
         required: true 
     },
     keyword: [{
@@ -22,9 +22,13 @@ const blogSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    cat: {
+    slug: {
         type: String,
-        requried: true
+        required: true
+    },
+    cat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
     },
     content: {
         type: String,

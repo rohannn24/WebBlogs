@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const Register = ({
   onRegister,
   user,
+  showAlert
 }) => {
   const nav = useNavigate();
   const [formData, setFormData] = useState({
@@ -19,9 +20,12 @@ const Register = ({
   });
   const [isMismatched, setIsMismatched] = useState(false);
   const [show, setShow] = useState(false);
+  const [id, setId] = useState('');
+  const [otp, setOtp] = useState('');
+  const [mailSent, setMailSent] = useState(false);
   useEffect(() => {
     document.title = 'Register User | TechBlog'
-  },[])
+  }, [])
   useEffect(() => {
     if (user) {
       nav('/admin/dashboard');
@@ -36,6 +40,7 @@ const Register = ({
   };
 
   const handleSubmit = async (e) => {
+    setMailSent(true);
     e.preventDefault();
     if (formData.confirmPassword !== formData.password) {
       setIsMismatched(true);
@@ -57,14 +62,37 @@ const Register = ({
       })
       const resData = await res.json();
       if (res.ok) {
-        setUser(resData.user, resData.token);
+        setMailSent(false);
+        document.querySelector('.reg-pop-up').style.display = 'flex';
+        // setUser(resData.user, resData.token);
+        setId(resData.user._id);
         onRegister(resData.message);
       } else {
         onRegister(resData.message);
       }
     }
   };
-
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    const res = await fetch(`/api/admin/verify-otp/${id}/${otp}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const resData = await res.json();
+    if (res.ok) {
+      document.querySelector('.reg-pop-up').style.display = 'none';
+      setUser(resData.user, resData.token);
+      onRegister(resData.message);
+    } else {
+      document.querySelector('.showOtpError').style.display = 'block';
+      showAlert(resData.message);
+    }
+  }
+  const handleOtpChange = async (e) => {
+    setOtp(e.target.value);
+  }
   return (
     <div className="full-admin-register">
       <div className="fur-card">
@@ -138,7 +166,23 @@ const Register = ({
         </div>
       </div>
 
-      
+      <div className="reg-pop-up">
+        <div className="rpu-card">
+          <div className="rpu-close"><i className="fa-solid fa-circle-xmark"></i></div>
+          <h2>Enter OTP here:</h2>
+          <form onSubmit={handleOtpSubmit}>
+            <input type="text" value={otp} onChange={handleOtpChange} id='otp' placeholder='Enter Your OTP' />
+            <p className='showOtpError'>Wroung OTP</p>
+            <input type="submit" value="Submit OTP" />
+          </form>
+        </div>
+      </div>
+      <div className="sending-mail" style={{ display: mailSent ? "flex" : "none" }}>
+        <div className="sm-loading">
+          <div className="sm-loader"></div>
+          <h2>Sending Mail...</h2>
+        </div>
+      </div>
     </div>
   );
 };

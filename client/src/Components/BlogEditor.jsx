@@ -5,24 +5,25 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import app from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 
-const BlogEditor = ({
-    showAlert,
-    user
-}) => {
+const BlogEditor = ({ showAlert, user }) => {
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
     const keywordRef = useRef(null);
+    const slugRef = useRef(null);
     const editorRef = useRef(null);
+    const categoryRef = useRef(null);
     const imageRef = useRef(null);
     const [bImg, setImageUrl] = useState("");
     const [imagePerc, setImgPerc] = useState("");
+    const [uploading, setUploading] = useState(false);
     const nav = useNavigate();
+    const [cat, setCat] = useState(null);
+
     useEffect(() => {
         const keywordInput = keywordRef.current;
         const handleKeyDown = (e) => {
-            const value = e.target.value;
-            if (e.key === ',' && value.slice(-1) === ',') {
-                console.log(value);
+            if (e.key === ',' && keywordInput.value.slice(-1) === ',') {
+                e.preventDefault(); // Prevent multiple commas
             }
         };
 
@@ -32,45 +33,69 @@ const BlogEditor = ({
             keywordInput.removeEventListener("keydown", handleKeyDown);
         };
     }, []);
+
     useEffect(() => {
-        if(imagePerc === 100){
-            document.querySelector('.showUploading').style.display = 'none'
-            document.querySelector('.showUploaded').style.display = 'block'
+        if (imagePerc === 100) {
+            setUploading(false);
+        } else if (imagePerc > 0) {
+            setUploading(true);
         }
-    }, [imagePerc])
+    }, [imagePerc]);
+
     const handleImageUpload = () => {
         const file = imageRef.current.files[0];
-        if (file) {
-            const storage = getStorage(app);
-            const fileName = `${new Date().getTime()}_${file.name}`;
-            const storageRef = ref(storage, `blogImage/${fileName}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    switch (snapshot.state) {
-                        case "paused":
-                            console.log("Upload is paused");
-                            break;
-                        case "running":
-                            setImgPerc(Math.round(progress));
-                            document.querySelector('.showUploading').style.display = 'block'
-                            break;
-                        default:
-                            break;
-                    }
-                },
-                (error) => {
-                    console.error('Upload failed:', error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setImageUrl(downloadURL);
-                    });
-                }
-            );
+        if (!file) {
+            showAlert('Please select an image file.');
+            return;
         }
+
+        const storage = getStorage(app);
+        const fileName = `${new Date().getTime()}_${file.name}`;
+        const storageRef = ref(storage, `blogImage/${fileName}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setImgPerc(Math.round(progress));
+            },
+            (error) => {
+                console.error('Upload failed:', error);
+                showAlert('Image upload failed. Please try again.');
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setImageUrl(downloadURL);
+                });
+            }
+        );
+    };
+
+    const getCategory = async () => {
+        const res = await fetch('/api/category/all-category', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                token: localStorage.getItem('token')
+            }
+        });
+        const resData = await res.json();
+        if (res.ok) {
+            setCat(resData);
+        } else {
+            showAlert('Something went wrong');
+        }
+    };
+
+    useEffect(() => {
+        getCategory();
+    }, []);
+
+    const generateSlug = (title) => {
+        return title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-') // Replace spaces and special characters with hyphens
+            .replace(/^-+|-+$/g, ''); // Trim hyphens from the start and end
     };
 
     const handleSubmit = async (e) => {
@@ -81,35 +106,46 @@ const BlogEditor = ({
             return;
         }
 
+        const title = titleRef.current.value;
+        const slug = slugRef.current.value || generateSlug(title);
+
         const blogData = {
-            title: titleRef.current.value,
+            title,
             description: descriptionRef.current.value,
             keyword: keywordRef.current.value,
+            slug, // Use the generated or provided slug
             content: editorRef.current.getContent(),
-            bImg: bImg
+            bImg,
+            cat: categoryRef.current.value,
+            adminId: user._id
         };
 
         console.log('Blog Data:', JSON.stringify(blogData, null, 2));
+
         const res = await fetch('/api/admin/add-blog', {
             method: 'post',
-            headers:{
-                'Content-Type':'application/json',
+            headers: {
+                'Content-Type': 'application/json',
                 token: localStorage.getItem('token'),
             },
-            body: JSON.stringify(blogData) 
+            body: JSON.stringify(blogData)
         });
+
         const resData = await res.json();
-        if(res.ok){
+        if (res.ok) {
             console.log(resData);
             showAlert(resData.message);
-            nav(`/admin/${user.username}/profile`)
-            blogData = {
-                title: null,
-                description: null,
-                keyword: null,
-                content: null,
-                bImg: null
-            };
+            nav(`/admin/${user.username}/profile`);
+
+            // Clear the form fields
+            titleRef.current.value = '';
+            descriptionRef.current.value = '';
+            keywordRef.current.value = '';
+            slugRef.current.value = '';
+            editorRef.current.setContent('');
+            setImageUrl('');
+            setImgPerc('');
+            setCat(null);
         }
     };
 
@@ -130,6 +166,23 @@ const BlogEditor = ({
                     <input type="text" placeholder="Add keywords for the Blog" ref={keywordRef} id="keyword" required />
                 </div>
                 <div className="inpt-pair">
+                    <label htmlFor="slug">Slug:</label>
+                    <input type="text" placeholder="Add slug for this blog" ref={slugRef} id="slug" required />
+                </div>
+                <div className="inpt-pair">
+                    <label htmlFor="category">Category:</label>
+                    <select name="category" id="category" ref={categoryRef} required>
+                        <option value="">Select Category</option>
+                        {cat && cat.categories && cat.categories.length > 0 ? (
+                            cat.categories.map((e) => (
+                                <option key={e._id} value={e._id}>{e.catName}</option>
+                            ))
+                        ) : (
+                            <option value="none">No Category Available</option>
+                        )}
+                    </select>
+                </div>
+                <div className="inpt-pair">
                     <label htmlFor="image">Add Image:</label>
                     <input
                         type="file"
@@ -140,8 +193,8 @@ const BlogEditor = ({
                         onChange={handleImageUpload}
                         required
                     />
-                    <p className='showUploading'>Uploading: {imagePerc}%</p>
-                    <p className='showUploaded'>Uploaded: {imagePerc}%</p>
+                    <p className='showUploading' style={{ display: uploading ? 'block' : 'none' }}>Uploading: {imagePerc}%</p>
+                    <p className='showUploaded' style={{ display: imagePerc === 100 ? 'block' : 'none' }}>Uploaded: {imagePerc}%</p>
                 </div>
                 <Editor
                     apiKey="zoi7anvfgjfg5r44pqjlvj1c4yblqglmz2pas2i65pah5c6u"

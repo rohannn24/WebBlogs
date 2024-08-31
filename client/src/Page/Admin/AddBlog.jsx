@@ -24,7 +24,7 @@ const AddBlog = ({
     };
 
     verifyAdmin();
-  }, [nav, showAlert]);
+  }, [nav]);
   useEffect(() => {
     document.title = "New Blog | TechBlog"
   },[])
@@ -36,9 +36,6 @@ const AddBlog = ({
         </div>
         <div className="fd-right">
           <BlogEditor showAlert={showAlert} user = {user}/>
-          <div className="s-o" onClick={() => {
-            document.querySelector('.fd-left').style.left === '-100%'? document.querySelector('.fd-left').style.left = '0%':document.querySelector('.fd-left').style.left = '-100%'
-          }}>More Options</div>
         </div>
       </div>
     </>

@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
 import './Style/Dashboard.css'
 import DashNav from '../../Components/DashNav'
-import DashContent from '../../Components/DashContent'
-const ManageComment = () => {
+import CategoryDash from '../../Components/CategoryDash'
+const ManageCategories = ({
+  user,
+  showAlert
+}) => {
   useEffect(() => {
     document.title = "Manage Comment | TechBlog"
   },[])
@@ -13,11 +16,11 @@ const ManageComment = () => {
           <DashNav/>
         </div>
         <div className="fd-right">
-          <DashContent/>
+          <CategoryDash user = {user} showAlert = {showAlert}/>
         </div>
       </div>
     </>
   )
 }
 
-export default ManageComment
+export default ManageCategories
